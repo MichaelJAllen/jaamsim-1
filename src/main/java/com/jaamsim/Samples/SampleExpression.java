@@ -32,6 +32,8 @@ public class SampleExpression implements SampleProvider {
 	private final Class<? extends Unit> unitType;
 	private final ExpEvaluator.EntityParseContext parseContext;
 
+	private double lastSample = 0;
+
 	public SampleExpression(String expString, Entity ent, Class<? extends Unit> ut) throws ExpError {
 		thisEnt = ent;
 		unitType = ut;
@@ -71,12 +73,14 @@ public class SampleExpression implements SampleProvider {
 		catch(ExpError e) {
 			thisEnt.error("%s", e.getMessage());
 		}
+
+		lastSample = ret;
 		return ret;
 	}
 
 	@Override
 	public double getMeanValue(double simTime) {
-		return 0;
+		return lastSample;
 	}
 
 	@Override
