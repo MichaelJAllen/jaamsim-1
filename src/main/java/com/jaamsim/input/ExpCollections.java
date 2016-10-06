@@ -122,26 +122,29 @@ public class ExpCollections {
 			this.unitType = ut;
 		}
 
-		private class Iter implements ExpResult.Iterator {
-
+		private static class Iter implements ExpResult.Iterator {
+			private final int arrayLen;
 			private int next = 0;
+
+			Iter(Object array) {
+				arrayLen = Array.getLength(array);
+			}
 
 			@Override
 			public boolean hasNext() {
-				return next < Array.getLength(array);
+				return next < arrayLen;
 			}
 
 			@Override
 			public ExpResult nextKey() throws ExpError {
-				ExpResult ret = ExpResult.makeNumResult(next + 1, DimensionlessUnit.class);
-				next++;
+				ExpResult ret = ExpResult.makeNumResult(++next, DimensionlessUnit.class);
 				return ret;
 			}
 		}
 
 		@Override
 		public Iterator getIter() {
-			return new Iter();
+			return new Iter(array);
 		}
 
 		@Override
@@ -195,25 +198,27 @@ public class ExpCollections {
 			this.unitType = ut;
 		}
 
-		private class Iter implements ExpResult.Iterator {
-
+		private static class Iter implements ExpResult.Iterator {
+			private final int vecSize;
 			private int next = 0;
 
+			Iter(DoubleVector v) {
+				vecSize = v.size();
+			}
 			@Override
 			public boolean hasNext() {
-				return next < vector.size();
+				return next < vecSize;
 			}
 
 			@Override
 			public ExpResult nextKey() throws ExpError {
-				ExpResult ret = ExpResult.makeNumResult(next + 1, DimensionlessUnit.class);
-				next++;
+				ExpResult ret = ExpResult.makeNumResult(++next, DimensionlessUnit.class);
 				return ret;
 			}
 		}
 		@Override
 		public Iterator getIter() {
-			return new Iter();
+			return new Iter(vector);
 		}
 
 		@Override
@@ -295,10 +300,12 @@ public class ExpCollections {
 			this.unitType = ut;
 		}
 
-		private class Iter implements ExpResult.Iterator {
+		private static class Iter implements ExpResult.Iterator {
+			final java.util.Iterator<?> keySetIt;
 
-			java.util.Iterator<?> keySetIt = map.keySet().iterator();
-
+			Iter(Map<?, ?> map) {
+				keySetIt = map.keySet().iterator();
+			}
 			@Override
 			public boolean hasNext() {
 				return keySetIt.hasNext();
@@ -313,7 +320,7 @@ public class ExpCollections {
 		}
 		@Override
 		public Iterator getIter() {
-			return new Iter();
+			return new Iter(map);
 		}
 
 		@Override
